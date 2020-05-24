@@ -34,7 +34,7 @@ func main() {
 }
 
 func printDiskUsage(nfiles, nbytes int64) {
-	fmt.Printf("%d files %.1fMB\n", nfiles, float64(nbytes)/1e6)
+	fmt.Printf("%d files %.1fMB %.1fGB\n", nfiles, float64(nbytes)/1e6, float64(nbytes)/1e9)
 }
 
 func walkDir(dir string, fileSizes chan<- int64) {
