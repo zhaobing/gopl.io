@@ -13,6 +13,8 @@ var verbose = flag.Bool("v", false, "show verbose progress message")
 
 func main() {
 
+	fmt.Println("start du2")
+
 	flag.Parse()
 	roots := flag.Args()
 	if len(roots) == 0 {

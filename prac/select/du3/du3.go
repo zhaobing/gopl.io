@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 )
 
 var vFlag = flag.Bool("v", false, "show vFlag progress message")
@@ -31,6 +32,33 @@ func main() {
 		close(fileSize)
 	}()
 
+	var tick <-chan time.Time
+	if *vFlag {
+		tick = time.Tick(500 * time.Millisecond)
+	}
+
+	var nFiles, nBytes int64
+
+loop:
+	for {
+		select {
+		case fBytes, ok := <-fileSize:
+			if !ok {
+				break loop
+			}
+			nFiles++
+			nBytes += fBytes
+		case <-tick:
+			printUsage(nFiles, nBytes)
+		}
+	}
+
+	fmt.Println("done!")
+	printUsage(nFiles, nBytes)
+}
+
+func printUsage(nFiles, nBytes int64) {
+	fmt.Printf("%d files %.1fMB %.1fGB\n", nFiles, float64(nBytes)/1e6, float64(nBytes)/1e9)
 }
 
 func walkDir(dir string, w *sync.WaitGroup, fileSize chan int64) {
