@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+//已知任务的数量,主goroutine等待多个子goroutine完成
 func main() {
 	ch := make(chan struct{})
 	start := time.Now()
