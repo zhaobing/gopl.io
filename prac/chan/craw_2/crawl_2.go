@@ -8,6 +8,7 @@ import (
 
 //并发爬虫
 //增加并行度的控制,使用缓冲通道的读写阻塞机制来控制并行度
+//
 //使用计数器实现退出机制
 func main() {
 	workList := make(chan []string)
