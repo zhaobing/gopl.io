@@ -18,8 +18,13 @@ func sum(vals ...int) int {
 }
 
 //!-
-
+func f(...int) {}
+func g([]int)  {}
 func main() {
+
+	fmt.Printf("%T\n", f) // "func(...int)"
+	fmt.Printf("%T\n", g) // "func([]int)"
+
 	//!+main
 	fmt.Println(sum())           //  "0"
 	fmt.Println(sum(3))          //  "3"
