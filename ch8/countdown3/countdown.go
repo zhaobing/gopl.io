@@ -11,6 +11,7 @@ package main
 
 import (
 	"fmt"
+	time2 "github.com/zhaobing/bingo/utils/time"
 	"os"
 	"time"
 )
@@ -34,7 +35,8 @@ func main() {
 	for countdown := 10; countdown > 0; countdown-- {
 		fmt.Println(countdown)
 		select {
-		case <-tick:
+		case t := <-tick:
+			fmt.Println(time2.Parse2DateTimeText(t))
 			// Do nothing.
 		case <-abort:
 			fmt.Println("Launch aborted!")

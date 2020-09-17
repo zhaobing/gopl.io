@@ -10,6 +10,7 @@ import (
 
 func main() {
 	flag.Parse()
+
 	roots := flag.Args()
 	if len(roots) == 0 {
 		roots = []string{"."}
@@ -38,12 +39,12 @@ func printDiskUsage(nfiles, nbytes int64) {
 }
 
 func walkDir(dir string, fileSizes chan<- int64) {
-	for _, entry := range dirents(dir) {
-		if entry.IsDir() {
-			subDir := filepath.Join(dir, entry.Name())
+	for _, fileInfo := range dirents(dir) {
+		if fileInfo.IsDir() {
+			subDir := filepath.Join(dir, fileInfo.Name())
 			walkDir(subDir, fileSizes)
 		} else {
-			fileSizes <- entry.Size()
+			fileSizes <- fileInfo.Size()
 		}
 	}
 }

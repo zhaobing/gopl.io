@@ -8,6 +8,7 @@ package main
 
 import (
 	"fmt"
+	time2 "github.com/zhaobing/bingo/utils/time"
 	"os"
 	"time"
 )
@@ -30,8 +31,10 @@ func main() {
 	//!+
 	fmt.Println("Commencing countdown.  Press return to abort.")
 	select {
-	case t := <-time.After(10 * time.Second):
-		fmt.Println("t", t)
+	case t := <-time.After(5 * time.Second):
+		t1 := time2.Parse2TimeText(t)
+		t2 := time2.Parse2DateTimeText(t)
+		fmt.Println("t", t1, t2)
 	case <-abort:
 		fmt.Println("Launch aborted!")
 		return
