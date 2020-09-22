@@ -48,8 +48,15 @@ func handle(conn *net.TCPConn) {
 		reader := bufio.NewReader(conn)
 		line, err := reader.ReadString('\n')
 		if err != nil {
-			logs.Error(err)
+			if err == io.EOF {
+				addr := conn.RemoteAddr()
+				fmt.Printf("%s close connections\n", addr)
+				return
+			} else {
+				logs.Error(err)
+			}
 		}
+
 		go echo(line, conn)
 	}
 

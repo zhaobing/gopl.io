@@ -68,11 +68,7 @@ func walkDirWrap(path string, fileSizes chan<- int64, wg *sync.WaitGroup) {
 }
 func walkDir(path string, fileSizes chan<- int64, wg *sync.WaitGroup) {
 	defer wg.Done()
-	fileInfos, err := ioutil.ReadDir(path)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "du2 error:%v\n", err)
-		return
-	}
+	fileInfos := readDirChildrenFileInfos(path)
 
 	for _, fileInfo := range fileInfos {
 		if fileInfo.IsDir() {
@@ -82,4 +78,16 @@ func walkDir(path string, fileSizes chan<- int64, wg *sync.WaitGroup) {
 			fileSizes <- fileInfo.Size()
 		}
 	}
+}
+
+var sema = make(chan struct{}, 100)
+
+func readDirChildrenFileInfos(dir string) []os.FileInfo {
+	sema <- struct{}{}
+	defer func() { <-sema }()
+	fileInfos, err := ioutil.ReadDir(dir)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "du4 error:%v\n", err)
+	}
+	return fileInfos
 }
