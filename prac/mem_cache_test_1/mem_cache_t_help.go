@@ -1,35 +1,29 @@
-// Copyright © 2016 Alan A. A. Donovan & Brian W. Kernighan.
-// License: https://creativecommons.org/licenses/by-nc-sa/4.0/
-
-// See page 272.
-
-// Package memotest provides common functions for
-// testing various designs of the memo package.
-package memotest
+package mem_cache_test_1
 
 import (
 	"fmt"
+	"github.com/astaxie/beego/logs"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"sync"
 	"testing"
 	"time"
 )
 
-//!+httpRequestBody
+type M interface {
+	Get(key string) (interface{}, error)
+}
+
 func httpGetBody(url string) (interface{}, error) {
 	resp, err := http.Get(url)
 	if err != nil {
+		logs.Error(err)
 		return nil, err
 	}
+
 	defer resp.Body.Close()
 	return ioutil.ReadAll(resp.Body)
 }
-
-//!-httpRequestBody
-
-//zhaob
 
 var HTTPGetBody = httpGetBody
 
@@ -52,9 +46,20 @@ var urls = []string{
 	"http://www.6.cn",
 	"http://www.eastday.com",
 	"http://www.efu.com.cn/",
+	"http://www.eastday.com",
+	"http://www.efu.com.cn/",
+	"http://www.gusuwang.com",
+	"https://www.liansuo.com/",
+	"https://www.iyiou.com/",
+	"http://www.sina.com",
+	"http://www.sohu.com",
+	"http://www.17ok.com",
+	"http://www.6.cn",
+	"http://www.eastday.com",
+	"http://www.efu.com.cn/",
 }
 
-func incomingURLs() <-chan string {
+func incomingUrls() <-chan string {
 	ch := make(chan string)
 	go func() {
 		for _, url := range urls {
@@ -65,54 +70,36 @@ func incomingURLs() <-chan string {
 	return ch
 }
 
-type M interface {
-	Get(key string) (interface{}, error)
-}
-
-/*
-//!+seq
-	m := memo.New(httpGetBody)
-//!-seq
-*/
-
 func Sequential(t *testing.T, m M) {
-	//!+seq
-	for url := range incomingURLs() {
+	for url := range incomingUrls() {
 		start := time.Now()
-		value, err := m.Get(url)
+		val, err := m.Get(url)
 		if err != nil {
-			log.Print(err)
+			logs.Error(err)
 			continue
 		}
-		fmt.Printf("%s, %s, %d bytes\n",
-			url, time.Since(start), len(value.([]byte)))
+		fmt.Printf("%s, %s, %d bytes\n", url, time.Since(start), len(val.([]byte)))
 	}
-	//!-seq
 }
 
-/*
-//!+conc
-	m := memo.New(httpGetBody)
-//!-conc
-*/
-
 func Concurrent(t *testing.T, m M) {
-	//!+conc
-	var n sync.WaitGroup
-	for url := range incomingURLs() {
-		n.Add(1)
-		go func(url string) {
-			defer n.Done()
+	var wg sync.WaitGroup
+	i := 0
+	for url := range incomingUrls() {
+		wg.Add(1)
+		i++
+		go func(href string, idx int) {
+			defer wg.Done()
 			start := time.Now()
-			value, err := m.Get(url)
+			val, err := m.Get(href)
 			if err != nil {
-				log.Print(err)
+				logs.Error(err)
 				return
 			}
-			fmt.Printf("%s, %s, %d bytes\n",
-				url, time.Since(start), len(value.([]byte)))
-		}(url)
+			fmt.Printf("%d,%s, %s, %d bytes\n", idx, href, time.Since(start), len(val.([]byte)))
+		}(url, i)
 	}
-	n.Wait()
-	//!-conc
+
+	wg.Wait()
+
 }

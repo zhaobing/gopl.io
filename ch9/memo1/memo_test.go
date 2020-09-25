@@ -4,10 +4,9 @@
 package memo_test
 
 import (
-	"testing"
-
+	"github.com/zhaobing/gopl.io/ch9/memotest"
 	"gopl.io/ch9/memo1"
-	"gopl.io/ch9/memotest"
+	"testing"
 )
 
 var httpGetBody = memotest.HTTPGetBody
