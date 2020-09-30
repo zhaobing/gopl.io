@@ -1,24 +1,23 @@
 // Copyright © 2016 Alan A. A. Donovan & Brian W. Kernighan.
 // License: https://creativecommons.org/licenses/by-nc-sa/4.0/
 
-package memo_test
+package memo1
 
 import (
 	"github.com/zhaobing/gopl.io/ch9/memotest"
-	"gopl.io/ch9/memo1"
 	"testing"
 )
 
 var httpGetBody = memotest.HTTPGetBody
 
 func Test(t *testing.T) {
-	m := memo.New(httpGetBody)
+	m := New(httpGetBody)
 	memotest.Sequential(t, m)
 }
 
 // NOTE: not concurrency-safe!  Test fails.
 func TestConcurrent(t *testing.T) {
-	m := memo.New(httpGetBody)
+	m := New(httpGetBody)
 	memotest.Concurrent(t, m)
 }
 

@@ -7,12 +7,17 @@
 // a function.  Requests for different keys proceed in parallel.
 // Concurrent requests for the same key block until the first completes.
 // This implementation uses a Mutex.
-package memo
+package memo4
 
 import "sync"
 
 // Func is the type of the function to memoize.
 type Func func(string) (interface{}, error)
+
+type testVo struct {
+	name string
+	age  int
+}
 
 type result struct {
 	value interface{}
@@ -26,13 +31,15 @@ type entry struct {
 }
 
 func New(f Func) *Memo {
-	return &Memo{f: f, cache: make(map[string]*entry)}
+	m := &Memo{f: f, cache: make(map[string]*entry)}
+	return m
 }
 
 type Memo struct {
-	f     Func
-	mu    sync.Mutex // guards cache
-	cache map[string]*entry
+	f      Func
+	mu     sync.Mutex // guards cache
+	cache  map[string]*entry
+	testVo testVo
 }
 
 func (memo *Memo) Get(key string) (value interface{}, err error) {

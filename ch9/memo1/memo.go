@@ -7,7 +7,7 @@
 
 // Package memo provides a concurrency-unsafe
 // memoization of a function of type Func.
-package memo
+package memo1
 
 // A Memo caches the results of calling a Func.
 type Memo struct {

@@ -6,9 +6,12 @@
 // Package memo provides a concurrency-safe memoization a function of
 // type Func.  Requests for different keys run concurrently.
 // Concurrent requests for the same key result in duplicate work.
-package memo
+package memo3
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+)
 
 type Memo struct {
 	f     Func
@@ -30,6 +33,7 @@ func New(f Func) *Memo {
 //!+
 
 func (memo *Memo) Get(key string) (value interface{}, err error) {
+	fmt.Println("mem.ver.3")
 	memo.mu.Lock()
 	res, ok := memo.cache[key]
 	memo.mu.Unlock()
