@@ -64,7 +64,3 @@ func (e *entry) deliver(response chan<- result) {
 	<-e.completeBroad
 	response <- e.result
 }
-
-//func (mc *MemCache) Get(key string) (interface{}, error) {
-//
-//}
