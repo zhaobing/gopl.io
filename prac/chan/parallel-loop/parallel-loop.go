@@ -10,19 +10,19 @@ import (
 func main() {
 	ch := make(chan struct{})
 	start := time.Now()
-	roundNum := 20
+	roundNum := 10
 	tasks := createTasks(roundNum)
 
 	//有多少任务，提交多少个任务到goroutine,并通过channel通知完成情况
 	for _, v := range tasks {
 		go subTask(v, ch)
+		time.Sleep(1 * time.Second)
 	}
 
 	//main-goroutine通过通道等待所有子任务完成
-	for range tasks {
+	for range tasks { //注意这里是循环的任务数量
 		<-ch
 	}
-
 	cost := time.Now().Sub(start)
 	fmt.Println("work done!!!", "cost=", cost)
 
@@ -30,7 +30,7 @@ func main() {
 
 func subTask(x string, ch chan struct{}) {
 	time.Sleep(200 * time.Millisecond)
-	fmt.Println(x)
+	//fmt.Println(x)
 	ch <- struct{}{}
 }
 
