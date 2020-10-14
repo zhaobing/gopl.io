@@ -11,10 +11,9 @@ package main
 
 import (
 	"fmt"
+	"gopl.io/ch5/links"
 	"log"
 	"os"
-
-	"gopl.io/ch5/links"
 )
 
 //!+sema

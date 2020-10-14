@@ -35,25 +35,25 @@ func (e *entry) deliver(respCh chan<- result) {
 }
 
 //缓存请求，封装了客户端对缓存的请求信息和响应通道
-type req struct {
+type request struct {
 	key    string
 	respCh chan result
 }
 
 //内存缓存
 type MemCache struct {
-	reqCh chan req
+	reqCh chan request
 }
 
 //初始化内存缓存
 func New(fun Fun) *MemCache {
-	m := &MemCache{reqCh: make(chan req)}
+	m := &MemCache{reqCh: make(chan request)}
 	go m.server(fun)
 	return m
 }
 
 func (m *MemCache) Get(key string) (interface{}, error) {
-	r := req{
+	r := request{
 		key:    key,
 		respCh: make(chan result),
 	}
