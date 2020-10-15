@@ -5,7 +5,6 @@ import (
 )
 
 //缓存函数的执行结果
-
 type result struct {
 	value interface{}
 	err   error

@@ -65,6 +65,6 @@ func (c *MemCache) server(fun Func) {
 
 func New(fun Func) *MemCache {
 	cache := &MemCache{requests: make(chan request)}
-	cache.server(fun)
+	go cache.server(fun)
 	return cache
 }
